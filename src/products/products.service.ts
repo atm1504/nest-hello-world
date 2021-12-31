@@ -3,10 +3,10 @@ import { Product } from './product.model';
 
 @Injectable()
 export class ProductsService {
-    private products: Product[] = [];
+  private products: Product[] = [];
 
   insertProduct(title: string, desc: string, price: number): string {
-    const prodId = Math.random().toString()
+    const prodId = Math.random().toString();
     const newProduct = new Product(prodId, title, desc, price);
     this.products.push(newProduct);
     return prodId;
@@ -28,5 +28,25 @@ export class ProductsService {
       throw new NotFoundException('Could not find product.');
     }
     return [product, productIndex];
+  }
+
+  updateProduct(productId: string, title: string, desc: string, price: number) {
+    const [product, index] = this.findProduct(productId);
+    const updatedProduct = { ...product };
+    if (title) {
+      updatedProduct.title = title;
+    }
+    if (desc) {
+      updatedProduct.description = desc;
+    }
+    if (price) {
+      updatedProduct.price = price;
+    }
+    this.products[index] = updatedProduct;
+  }
+
+  deleteProduct(prodId: string) {
+    const index = this.findProduct(prodId)[1];
+    this.products.splice(index, 1);
   }
 }
